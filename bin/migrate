@@ -4,9 +4,11 @@
  * Module dependencies.
  */
 
-var migrate = require('../')
-  , join = require('path').join
-  , fs = require('fs');
+import * as migrate from '../index.js';
+import path from 'path';
+import fs from 'fs';
+
+const join = path.join;
 
 /**
  * Arguments.
