@@ -20,5 +20,6 @@
     "should": ">= 0.0.1"
   },
   "main": "index",
+  "type": "module",
   "engines": { "node": ">= 0.8.x" }
 }
