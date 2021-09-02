@@ -1,11 +1,10 @@
-
 /**
  * Module dependencies.
  */
 
-var migrate = require('../')
-  , should = require('should')
-  , fs = require('fs');
+var migrate = require('../'),
+  should = require('should'),
+  fs = require('fs');
 
 // remove migration file
 
@@ -23,35 +22,47 @@ var db = { pets: [] };
 
 migrate(__dirname + '/.migrate');
 
-migrate('add guy ferrets', function(next){
-  db.pets.push({ name: 'tobi' });
-  db.pets.push({ name: 'loki' });
-  next();
-}, function(next){
-  db.pets.pop();
-  db.pets.pop();
-  next();
-});
+migrate(
+  'add guy ferrets',
+  function (next) {
+    db.pets.push({ name: 'tobi' });
+    db.pets.push({ name: 'loki' });
+    next();
+  },
+  function (next) {
+    db.pets.pop();
+    db.pets.pop();
+    next();
+  }
+);
 
-migrate('add girl ferrets', function(next){
-  db.pets.push({ name: 'jane' });
-  next();
-}, function(next){
-  db.pets.pop();
-  next();
-});
+migrate(
+  'add girl ferrets',
+  function (next) {
+    db.pets.push({ name: 'jane' });
+    next();
+  },
+  function (next) {
+    db.pets.pop();
+    next();
+  }
+);
 
-migrate('add emails', function(next){
-  db.pets.forEach(function(pet){
-    pet.email = pet.name + '@learnboost.com';
-  });
-  next();
-}, function(next){
-  db.pets.forEach(function(pet){
-    delete pet.email;
-  });
-  next();
-});
+migrate(
+  'add emails',
+  function (next) {
+    db.pets.forEach(function (pet) {
+      pet.email = pet.name + '@learnboost.com';
+    });
+    next();
+  },
+  function (next) {
+    db.pets.forEach(function (pet) {
+      delete pet.email;
+    });
+    next();
+  }
+);
 
 // tests
 
@@ -61,15 +72,15 @@ migrate.version.should.match(/^\d+\.\d+\.\d+$/);
 
 var set = migrate();
 
-set.up(function(){
+set.up(function () {
   assertPets();
-  set.up(function(){
+  set.up(function () {
     assertPets();
-    set.down(function(){
+    set.down(function () {
       assertNoPets();
-      set.down(function(){
+      set.down(function () {
         assertNoPets();
-        set.up(function(){
+        set.up(function () {
           assertPets();
           testNewMigrations();
         });
@@ -81,21 +92,25 @@ set.up(function(){
 // test adding / running new migrations
 
 function testNewMigrations() {
-  migrate('add dogs', function(next){
-    db.pets.push({ name: 'simon' });
-    db.pets.push({ name: 'suki' });
-    next();
-  }, function(next){
-    db.pets.pop();
-    db.pets.pop();
-    next();
-  });
+  migrate(
+    'add dogs',
+    function (next) {
+      db.pets.push({ name: 'simon' });
+      db.pets.push({ name: 'suki' });
+      next();
+    },
+    function (next) {
+      db.pets.pop();
+      db.pets.pop();
+      next();
+    }
+  );
 
-  set.up(function(){
+  set.up(function () {
     assertPets.withDogs();
-    set.up(function(){
+    set.up(function () {
       assertPets.withDogs();
-      set.down(function(){
+      set.down(function () {
         assertNoPets();
         testMigrationEvents();
       });
@@ -106,45 +121,50 @@ function testNewMigrations() {
 // test events
 
 function testMigrationEvents() {
-  migrate('adjust emails', function(next){
-    db.pets.forEach(function(pet){
-      if (pet.email)
-        pet.email = pet.email.replace('learnboost.com', 'lb.com');
-    });
-    next();
-  }, function(next){
-    db.pets.forEach(function(pet){
-      if (pet.email)
-        pet.email = pet.email.replace('lb.com', 'learnboost.com');
-    });
-    next();
-  });
+  migrate(
+    'adjust emails',
+    function (next) {
+      db.pets.forEach(function (pet) {
+        if (pet.email)
+          pet.email = pet.email.replace('learnboost.com', 'lb.com');
+      });
+      next();
+    },
+    function (next) {
+      db.pets.forEach(function (pet) {
+        if (pet.email)
+          pet.email = pet.email.replace('lb.com', 'learnboost.com');
+      });
+      next();
+    }
+  );
 
-  var migrations = []
-    , completed = 0
-    , expectedMigrations = [
-      'add guy ferrets'
-    , 'add girl ferrets'
-    , 'add emails'
-    , 'add dogs'
-    , 'adjust emails'];
+  var migrations = [],
+    completed = 0,
+    expectedMigrations = [
+      'add guy ferrets',
+      'add girl ferrets',
+      'add emails',
+      'add dogs',
+      'adjust emails',
+    ];
 
-  set.on('migration', function(migration, direction){
+  set.on('migration', function (migration, direction) {
     migrations.push(migration.title);
     direction.should.be.a('string');
   });
 
-  set.on('complete', function(){
+  set.on('complete', function () {
     ++completed;
   });
 
-  set.up(function(){
+  set.up(function () {
     db.pets[0].email.should.equal('tobi@lb.com');
     migrations.should.eql(expectedMigrations);
     completed.should.equal(1);
 
     migrations = [];
-    set.down(function(){
+    set.down(function () {
       migrations.should.eql(expectedMigrations.reverse());
       completed.should.equal(2);
       assertNoPets();
@@ -157,20 +177,20 @@ function testMigrationEvents() {
 
 function testNamedMigrations() {
   assertNoPets();
-  set.up(function() {
+  set.up(function () {
     assertFirstMigration();
-    set.up(function() {
+    set.up(function () {
       assertSecondMigration();
-      set.down(function() {
+      set.down(function () {
         assertFirstMigration();
-        set.up(function() {
+        set.up(function () {
           assertSecondMigration();
-          set.down(function() {
+          set.down(function () {
             set.pos.should.equal(1);
           }, 'add girl ferrets');
-        },'add girl ferrets');
+        }, 'add girl ferrets');
       }, 'add girl ferrets');
-    },'add girl ferrets');
+    }, 'add girl ferrets');
   }, 'add guy ferrets');
 }
 
@@ -203,7 +223,7 @@ function assertSecondMigration() {
   set.pos.should.equal(2);
 }
 
-assertPets.withDogs = function(){
+assertPets.withDogs = function () {
   db.pets.should.have.length(5);
   db.pets[0].name.should.equal('tobi');
   db.pets[0].email.should.equal('tobi@learnboost.com');
@@ -212,6 +232,6 @@ assertPets.withDogs = function(){
 
 // status
 
-process.on('exit', function(){
+process.on('exit', function () {
   console.log('\n   ok\n');
 });

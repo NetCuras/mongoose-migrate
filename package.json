@@ -9,17 +9,25 @@
   ],
   "author": "TJ Holowaychuk <tj@vision-media.ca>",
   "contributors": [
-    { "name": "Madhusudhan Srinivasa", "email": "madhums8@gmail.com" }
+    {
+      "name": "Madhusudhan Srinivasa",
+      "email": "madhums8@gmail.com"
+    }
   ],
   "repository": "git://github.com/madhums/mongoose-migrate",
-  "bin": { "mongoose-migrate": "./bin/migrate" },
-  "dependencies" : {
+  "bin": {
+    "mongoose-migrate": "./bin/migrate"
+  },
+  "dependencies": {
     "mongoose": "^5.0.0"
   },
   "devDependencies": {
+    "prettier": "^2.3.2",
     "should": ">= 0.0.1"
   },
   "main": "index",
   "type": "module",
-  "engines": { "node": ">= 0.8.x" }
+  "engines": {
+    "node": ">= 0.8.x"
+  }
 }
