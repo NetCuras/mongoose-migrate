@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-import * as migrate from '../index.js';
+import { migrate } from '../index.js';
 import path from 'path';
 import fs from 'fs';
 
