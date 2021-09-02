@@ -16,7 +16,7 @@
   ],
   "repository": "git://github.com/madhums/mongoose-migrate",
   "bin": {
-    "mongoose-migrate": "./bin/migrate"
+    "mongoose-migrate": "./bin/migrate.js"
   },
   "dependencies": {
     "mongoose": "^5.0.0"
