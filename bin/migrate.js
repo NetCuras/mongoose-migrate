@@ -121,7 +121,7 @@ function migrations() {
  */
 
 function log(key, msg) {
-  console.log('  \033[90m%s :\033[0m \033[36m%s\033[0m', key, msg);
+  console.log('  ', key, msg);
 }
 
 /**
@@ -135,7 +135,7 @@ function slugify(str) {
 // create ./migrations
 
 try {
-  fs.mkdirSync('migrations', 0774);
+  fs.mkdirSync('migrations', 0o774);
 } catch (err) {
   // ignore
 }
