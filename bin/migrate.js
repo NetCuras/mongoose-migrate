@@ -219,39 +219,39 @@ function create(name) {
  * @param {Number} direction
  */
 
-function performMigration(direction, migrationName, force) {
+async function performMigration(direction, migrationName, force) {
   migrate('migrations/.migrate');
-  var all = migrations().map(path => {
+  let paths = migrations();
+  if (!paths.length) {
+    process.exit();
+  }
+
+  for (let path of paths) {
     var modPath = `${process.cwd()}/${path}`;
-    return import(modPath).then(mod => {
-      migrate(path, mod.up, mod.down);
-    });
+    let mod = await import(modPath);
+    migrate(path, mod.up, mod.down);
+  }
+
+  var set = migrate();
+
+  if (force) {
+    set.force = true;
+  }
+
+  set.on('migration', function(migration, direction){
+    log(direction, migration.title);
   });
 
-  return Promise.all(all).then(() => {
-    if (!all.length) process.exit();
-
-    var set = migrate();
-
-    if (force) {
-      set.force = true;
-    }
-
-    set.on('migration', function(migration, direction){
-      log(direction, migration.title);
-    });
-
-    set.on('save', function(){
-      log('migration', 'complete');
-      process.exit();
-    });
-
-    var migrationPath = migrationName
-      ? join('migrations', migrationName)
-      : migrationName;
-
-    set[direction](null, migrationPath);
+  set.on('save', function(){
+    log('migration', 'complete');
+    process.exit();
   });
+
+  var migrationPath = migrationName
+    ? join('migrations', migrationName)
+    : migrationName;
+
+  set[direction](null, migrationPath);
 }
 
 // invoke command
