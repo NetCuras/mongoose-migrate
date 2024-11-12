@@ -1,6 +1,6 @@
 {
-  "name": "mongoose-migrate",
-  "version": "0.4.0",
+  "name": "mongoose-migrate-promises",
+  "version": "1.0.0",
   "description": "Abstract migration framework for node",
   "keywords": [
     "migrate",
@@ -12,11 +12,15 @@
     {
       "name": "Madhusudhan Srinivasa",
       "email": "madhums8@gmail.com"
+    },
+    {
+      "name": "Gavin Aiken",
+      "email": "gavin@aiken.org.uk"
     }
   ],
-  "repository": "git://github.com/madhums/mongoose-migrate",
+  "repository": "git://github.com/NetCuras/mongoose-migrate",
   "bin": {
-    "mongoose-migrate": "./bin/migrate.js"
+    "mongoose-migrate-promises": "./bin/migrate.js"
   },
   "dependencies": {
     "mongoose": "^8.0.0"

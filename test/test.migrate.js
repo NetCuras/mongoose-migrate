@@ -2,9 +2,9 @@
  * Module dependencies.
  */
 
-var migrate = require('../'),
-  should = require('should'),
-  fs = require('fs');
+import { migrate } from '../index.js';
+import should from 'should';
+import fs from 'fs';
 
 // remove migration file
 
